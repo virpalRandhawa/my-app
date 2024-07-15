@@ -11,7 +11,7 @@ const Navigation = () => {
    <Fragment>
     <div className='navigation'>
         <Link className='logo-container' to='/'>
-       <CrwnLogo className='logo'/>
+       <CrwnLogo className='logo'/> 
         </Link>
         {/* nav-links-Container contain whole Nav Links */}
         <div className='nav-links-container'>
