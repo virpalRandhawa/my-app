@@ -4,6 +4,7 @@ import {
     signInWithPopup,
     signInWithRedirect,
     GoogleAuthProvider,
+    createUserWithEmailAndPassword,  
 } from 'firebase/auth';
 
 // to set and get Data From fireStore
@@ -26,24 +27,25 @@ const firebaseConfig = {
     messagingSenderId: "263389251383",
     appId: "1:263389251383:web:8c4a105b52f24d601ffcb2",
   };
-  
-
 
   // Initialize Firebase
   const firebaseApp = initializeApp(firebaseConfig);
 
   // we wanna Google Authentication
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
 
  export const auth = getAuth();
- export const signInWithGooglePopup = () => signInWithPopup(auth,provider)
+ export const signInWithGooglePopup = () => signInWithPopup(auth,googleProvider)
+ export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider)
 
-// 
+ // to get and set data from firebseStore
+
  export const db = getFirestore()
-export const createUserDocumentFromAuth = async(userAuth) =>{
+export const createUserDocumentFromAuth = async(userAuth,additionalInformation = {}) =>{
+   if(!userAuth) return;
 const userDocRef = doc(db, 'users', userAuth.uid)
 
 console.log(userDocRef);
@@ -61,7 +63,8 @@ if(!userSnapshot.exists()){
         await setDoc(userDocRef,{
             displayName,
             email,
-            createdAt
+            createdAt,
+            ...additionalInformation,
         });
 
     }
@@ -75,7 +78,10 @@ if(!userSnapshot.exists()){
 
 };
 
-
+export const createAuthUserWithEmailAndPassword = async(email,password) => {
+    if(!email || !password) return;
+   return await createUserWithEmailAndPassword(auth,email,password);
+}
 
 
 
